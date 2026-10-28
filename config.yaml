@@ -1,0 +1,30 @@
+seed: 42
+image_size: 256
+
+paths:
+  raw_root: data/raw/COVID-19_Radiography_Dataset   # change if you use another dataset
+  processed: data/processed
+  enhanced: data/enhanced
+  restored: data/restored
+  predicted_masks: data/predicted_masks
+  features: data/features
+  reports: reports
+
+# Binary task. Edit the lists to change what counts as each class.
+classes:
+  Normal: 0
+  Viral Pneumonia: 1
+  Lung_Opacity: 1
+
+split:            # stratified train/val/test
+  val: 0.15
+  test: 0.15
+
+preprocessing:
+  denoise: median        # none | median | gaussian | bilateral | nlm
+  denoise_ksize: 3
+
+enhancement:
+  clahe: {clip_limit: 2.0, tile_grid: 8}
+  homomorphic: {gamma_low: 0.5, gamma_high: 1.8, c: 1.0, d0: 30}
+  highpass: {d0: 30, order: 2, boost: 1.0}

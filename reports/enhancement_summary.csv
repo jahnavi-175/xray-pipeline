@@ -1,0 +1,7 @@
+method,entropy,contrast,sharpness,separability
+none,7.328,59.295,30.739,0.581
+he,7.173,76.063,43.255,0.803
+clahe,7.488,61.628,52.791,0.691
+histspec,5.668,70.423,39.438,0.945
+homomorphic,4.31,9.957,9.364,0.351
+highpass,7.054,44.802,30.045,0.573
