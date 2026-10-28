@@ -12,9 +12,14 @@ def normalize01(img):
     return img.astype(np.float32) / 255.0
 
 
-def to_uint8(x):
-    """Any float image -> min-max stretched uint8."""
+def to_uint8(x, clip=None):
+    """Float image -> uint8 by min-max stretch.
+    clip=(lo, hi) percentiles: ignore extreme outliers (bright text markers, metal) so they
+    do not squash the rest of the image into the dark end of the range."""
     x = x.astype(np.float64)
+    if clip is not None:
+        lo, hi = np.percentile(x, clip)
+        x = np.clip(x, lo, hi)
     rng = x.max() - x.min()
     if rng < 1e-12:
         return np.zeros(x.shape, np.uint8)

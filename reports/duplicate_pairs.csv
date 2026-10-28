@@ -1,0 +1,11 @@
+id_a,id_b,dist,split_a,split_b,label_a,label_b
+Normal-1842,Normal-4109,12,train,train,0,0
+Normal-6652,Normal-6671,10,train,train,0,0
+Normal-817,Normal-818,0,val,train,0,0
+Viral Pneumonia-1052,Viral Pneumonia-1053,0,test,train,1,1
+Viral Pneumonia-117,Viral Pneumonia-118,0,train,train,1,1
+Viral Pneumonia-249,Viral Pneumonia-250,0,val,train,1,1
+Viral Pneumonia-294,Viral Pneumonia-295,0,val,train,1,1
+Viral Pneumonia-595,Viral Pneumonia-596,0,train,test,1,1
+Viral Pneumonia-74,Viral Pneumonia-75,0,train,train,1,1
+Viral Pneumonia-953,Viral Pneumonia-954,0,train,train,1,1

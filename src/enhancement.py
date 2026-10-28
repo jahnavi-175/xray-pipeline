@@ -32,20 +32,22 @@ def _dist_grid(shape):
     return np.sqrt(U ** 2 + V ** 2)
 
 
-def homomorphic_H(shape, gamma_low=0.5, gamma_high=1.8, c=1.0, d0=30):
+def homomorphic_H(shape, gamma_low=0.7, gamma_high=1.5, c=1.0, d0=10):
     """Transfer function of the homomorphic filter (exposed so it can be plotted)."""
     D = _dist_grid(shape)
     return (gamma_high - gamma_low) * (1 - np.exp(-c * D ** 2 / (d0 ** 2))) + gamma_low
 
 
-def homomorphic(img, gamma_low=0.5, gamma_high=1.8, c=1.0, d0=30):
-    """log -> FFT -> Gaussian high-emphasis -> IFFT -> exp.
-    Suppresses slow illumination variation (low freq) and boosts detail/reflectance (high freq)."""
+def homomorphic(img, gamma_low=0.7, gamma_high=1.5, c=1.0, d0=10):
+    """log -> FFT -> Gaussian high-emphasis -> IFFT -> contrast stretch.
+    Suppresses slow illumination variation (low freq) and boosts detail/reflectance (high freq).
+    The result is stretched in the log domain (no final exp): exp() would skew the histogram to
+    dark values and let bright text markers dominate, giving a near-black image."""
     f = np.log1p(img.astype(np.float64))
     F = np.fft.fftshift(np.fft.fft2(f))
     H = homomorphic_H(img.shape, gamma_low, gamma_high, c, d0)
     out = np.real(np.fft.ifft2(np.fft.ifftshift(F * H)))
-    return to_uint8(np.expm1(out))
+    return to_uint8(out, clip=(1, 99.5))
 
 
 def butterworth_highpass(img, d0=30, order=2, boost=1.0):
@@ -55,7 +57,7 @@ def butterworth_highpass(img, d0=30, order=2, boost=1.0):
     D[D == 0] = 1e-6
     HP = 1.0 / (1.0 + (d0 / D) ** (2 * order))
     out = np.real(np.fft.ifft2(np.fft.ifftshift(F * (1 + boost * HP))))
-    return to_uint8(out)
+    return to_uint8(out, clip=(1, 99.5))
 
 
 def enhance(img, method, cfg=None, reference=None):

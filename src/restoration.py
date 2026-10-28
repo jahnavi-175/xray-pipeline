@@ -84,3 +84,13 @@ def cls_filter(g, psf, gamma=0.01):
     lap = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]], np.float64)
     P = psf2otf(lap, g.shape)
     return _apply(g, np.conj(H) / (np.abs(H) ** 2 + gamma * np.abs(P) ** 2)).astype(np.uint8)
+
+
+def blur_score(img):
+    """Variance of the Laplacian: low value = blurry (no-reference sharpness)."""
+    return float(cv2.Laplacian(img, cv2.CV_64F).var())
+
+
+def audit_image(img):
+    """Quick no-reference diagnosis used to decide whether restoration is needed."""
+    return dict(sigma_noise=estimate_sigma(img), blur_score=blur_score(img))

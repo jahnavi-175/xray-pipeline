@@ -1,7 +1,9 @@
-method,entropy,contrast,sharpness,separability
-none,7.328,59.295,30.739,0.581
-he,7.173,76.063,43.255,0.803
-clahe,7.488,61.628,52.791,0.691
-histspec,5.668,70.423,39.438,0.945
-homomorphic,4.31,9.957,9.364,0.351
-highpass,7.054,44.802,30.045,0.573
+,entropy,entropy,contrast,contrast,sharpness,sharpness,separability,separability
+,mean,std,mean,std,mean,std,mean,std
+method,,,,,,,,
+clahe,7.488,0.354,61.628,8.652,52.791,10.716,0.691,0.383
+he,7.173,0.392,76.063,3.072,43.255,11.083,0.803,0.375
+highpass,7.572,0.315,67.837,8.955,44.824,9.878,0.579,0.418
+histspec,5.668,0.267,70.423,3.17,39.438,10.778,0.945,0.419
+homomorphic,6.338,0.392,47.469,11.854,31.303,7.285,0.303,0.241
+none,7.328,0.392,59.295,9.773,30.739,7.361,0.581,0.423

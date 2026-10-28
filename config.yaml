@@ -26,5 +26,15 @@ preprocessing:
 
 enhancement:
   clahe: {clip_limit: 2.0, tile_grid: 8}
-  homomorphic: {gamma_low: 0.5, gamma_high: 1.8, c: 1.0, d0: 30}
+  homomorphic: {gamma_low: 0.7, gamma_high: 1.5, c: 1.0, d0: 10}
   highpass: {d0: 30, order: 2, boost: 1.0}
+
+restoration:
+  psf_sigma: 1.0          # assumed blur of flagged images (Gaussian PSF)
+  K: 0.01                 # Wiener noise-to-signal ratio (tune with run_restoration_experiment.py)
+  blur_percentile: 5      # images below this sharpness percentile are flagged as blurry
+  noise_percentile: 95    # images above this noise percentile are flagged as noisy
+
+dedup:
+  hash_size: 16           # 16x16 difference hash = 256 bits
+  max_dist: 12            # max differing bits to call two images near-duplicates
