@@ -60,3 +60,9 @@ def load_mask(path, size=256):
         raise FileNotFoundError(path)
     m = cv2.resize(m, (size, size), interpolation=cv2.INTER_NEAREST)
     return (m > 127).astype(np.uint8)
+
+
+def enhanced_path(cfg, enh, image_id):
+    """Path of an image for a given enhancement variant ('none' = processed, un-enhanced)."""
+    base = ROOT / cfg["paths"]["processed"] if enh == "none" else ROOT / cfg["paths"]["enhanced"] / enh
+    return base / f"{image_id}.png"

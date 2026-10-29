@@ -1,0 +1,12 @@
+enh,seg,dice,dice_std,iou,empty_masks
+none,adaptive,0.458,0.287,0.34,82
+none,adaptive+prior,0.756,0.116,0.621,0
+none,kmeans,0.247,0.27,0.172,90
+none,kmeans+prior,0.54,0.275,0.414,0
+none,multi_otsu,0.218,0.261,0.151,92
+none,multi_otsu+prior,0.526,0.284,0.404,0
+none,otsu,0.303,0.276,0.212,145
+none,otsu+prior,0.647,0.207,0.507,0
+none,region_growing,0.396,0.206,0.267,45
+none,region_growing+prior,0.479,0.19,0.336,0
+none,unet,0.98,0.013,0.96,0
