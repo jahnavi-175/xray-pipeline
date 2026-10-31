@@ -59,3 +59,18 @@ and copy `models/unet_none.pt` back into this project's `models/` folder.
     python scripts/analyze_features.py --file data/features/features_none__none_unet.csv
 Ablation variants: `--masks gt` (oracle masks), `--masks full` (no segmentation), `--enh clahe|he|histspec|...`.
 375 features per image: shape_* (27), stat_* (10), glcm_* (14), hog_* (324). `src.features.extract_features(img, mask)` is what the dashboard calls.
+
+## Part 5 (classifiers + ablation)
+Needs the feature tables from Part 4 (`features_none__none_unet.csv`, `__gt`, `__full`, `features_clahe__none_unet.csv`).
+
+    python scripts/train_classifier.py --name G --enh none --masks none_unet --model rf     # one config, val metrics + CIs
+    python scripts/run_ablation.py --models rf                                              # whole grid -> reports/ablation_table.csv
+    python scripts/run_ablation.py --models svm rf                                          # full (SVM is slower)
+    python scripts/train_classifier.py --name FINAL --model rf --final --save               # ONCE at the end: test metrics + models/classifier.joblib
+
+CNN baseline (Colab GPU):  `python scripts/export_cnn_data.py --enh none --size 128`, upload, then in Colab
+`python scripts/train_cnn.py --data cnn_none_128.npz --epochs 10 --final`; copy `reports/cnn_none_128.json` back and run
+`python scripts/run_ablation.py --cnn reports/cnn_none_128.json --cnn-name J_cnn_none`.
+
+Protocol: hyper-parameters are tuned with stratified CV on the TRAIN split; configurations are compared on VAL;
+TEST is reported once for the final choice (`--final`). 95% bootstrap CIs are in the logged metrics.

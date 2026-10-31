@@ -1,0 +1,11 @@
+config,enhancement,segmentation,seg_dice,features,classifier,n_features,val_acc,val_f1,val_auc,val_rec,val_spec,train_acc
+A_noseg-rf,none,full,,stat+glcm+hog,rf,346,0.866,0.831,0.936,0.786,0.923,1.0
+B_unet_shape-rf,none,none_unet,0.982,shape,rf,27,0.851,0.822,0.916,0.819,0.874,0.932
+C_unet_stat-rf,none,none_unet,0.982,stat,rf,10,0.843,0.813,0.914,0.813,0.864,0.948
+D_unet_glcm-rf,none,none_unet,0.982,glcm,rf,14,0.752,0.715,0.834,0.74,0.761,0.988
+E_unet_hog-rf,none,none_unet,0.982,hog,rf,324,0.874,0.847,0.94,0.833,0.903,1.0
+F_unet_hand-rf,none,none_unet,0.982,shape+stat+glcm,rf,51,0.884,0.861,0.947,0.861,0.9,1.0
+G_unet_all-rf,none,none_unet,0.982,shape+stat+glcm+hog,rf,375,0.902,0.883,0.957,0.88,0.918,0.984
+H_clahe_all-rf,clahe,none_unet,0.982,shape+stat+glcm+hog,rf,375,0.899,0.879,0.955,0.875,0.916,0.985
+A2_unet_nosh-rf,none,none_unet,0.982,stat+glcm+hog,rf,348,0.893,0.872,0.951,0.869,0.911,0.999
+I_gt_all-rf,none,gt,1.0,shape+stat+glcm+hog,rf,375,0.903,0.883,0.958,0.879,0.92,0.986
