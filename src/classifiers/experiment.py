@@ -1,6 +1,7 @@
 """One ablation experiment = (feature file, feature groups, model) -> tuned fit -> metrics."""
 import time
 import joblib
+import numpy as np
 from sklearn.calibration import CalibratedClassifierCV
 import matplotlib
 matplotlib.use("Agg")
@@ -13,6 +14,9 @@ from ..evaluation.ablation import log_result
 from ..evaluation.seg_eval import segmentation_scores
 from .classical_ml import select_columns, usable_columns, build_pipeline, tune, get_scores
 
+# interpretable features the dashboard compares against typical Normal / Abnormal training values
+INTERPRETABLE = ["shape_area_frac", "shape_medial_gap_ratio", "shape_lr_area_ratio", "stat_mean", "stat_std",
+                 "stat_lung_to_rest", "stat_lr_mean_diff", "glcm_d1_entropy", "glcm_d1_contrast"]
 COLORS = {"shape": "#4c72b0", "stat": "#55a868", "glcm": "#c44e52", "hog": "#8172b2"}
 
 
@@ -76,8 +80,11 @@ def run_experiment(cfg, name, enh, masks, groups, kind, n_iter=12, tune_n=4000, 
     if save:
         out = save_path or ROOT / "models" / "classifier.joblib"
         out.parent.mkdir(exist_ok=True)
+        ref = {c: {"normal": float(tr[tr.label == 0][c].median()), "abnormal": float(tr[tr.label == 1][c].median())}
+               for c in INTERPRETABLE if c in cols}
         joblib.dump({"pipeline": pipe, "columns": cols, "enh": enh, "masks": masks, "groups": list(groups),
-                     "kind": kind, "params": best, "svm_pca": svm_pca}, out)
+                     "kind": kind, "params": best, "svm_pca": svm_pca, "reference": ref,
+                     "val_scores": np.asarray(vscore, dtype=np.float32), "val_labels": va.label.values.astype(int)}, out)
         if verbose:
             print("saved", out)
     if verbose:

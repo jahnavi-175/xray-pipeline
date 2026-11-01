@@ -1,0 +1,7 @@
+image_id,class_name,truth,predicted,prob_abnormal,seg,lung_area_pct
+Lung_Opacity-5375,Lung_Opacity,Abnormal,Abnormal,0.9874407281893078,unet,23.9501953125
+Lung_Opacity-3703,Lung_Opacity,Abnormal,Abnormal,0.850974898372812,unet,26.91497802734375
+Normal-3480,Normal,Normal,Normal,0.10077330560861662,unet,36.47918701171875
+Normal-1341,Normal,Normal,Normal,0.14615254855153467,unet,25.897216796875
+Viral Pneumonia-1243,Viral Pneumonia,Abnormal,Abnormal,0.9754336669711438,unet,19.085693359375
+Viral Pneumonia-811,Viral Pneumonia,Abnormal,Abnormal,0.8543213283496212,unet,17.7947998046875

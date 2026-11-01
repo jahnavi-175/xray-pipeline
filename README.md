@@ -74,3 +74,22 @@ CNN baseline (Colab GPU):  `python scripts/export_cnn_data.py --enh none --size 
 
 Protocol: hyper-parameters are tuned with stratified CV on the TRAIN split; configurations are compared on VAL;
 TEST is reported once for the final choice (`--final`). 95% bootstrap CIs are in the logged metrics.
+
+## Part 6 (dashboard)
+    streamlit run app/streamlit_app.py                       # opens http://localhost:8501
+    python scripts/run_pipeline_demo.py --n 2 --copy-samples  # sample outputs -> reports/sample_outputs/, samples -> app/samples/
+Flow: upload -> preprocessing (denoise, deblur if blurry) -> enhancement preview -> lung segmentation (U-Net or classical)
+-> features (shape / intensity / GLCM / HOG) -> prediction with an adjustable decision threshold and the
+sensitivity/specificity trade-off measured on the validation set.
+Needs in `models/`: `unet_none.pt`, `classifier.joblib`, `lung_atlas.npy` (the app falls back gracefully if one is missing).
+The code is in `src/pipeline.py`; the app is a thin layer on top and is covered by tests (`tests/test_app.py`).
+Sample images come from the COVID-19 Radiography Database (CC BY-NC-SA 4.0); cite the source if you redistribute them.
+**Research prototype. Not a medical device and not clinically validated.**
+
+### Final evaluation (run each of these exactly once, after all model choices are made)
+    python scripts/train_classifier.py --name FINAL --enh none --masks none_unet --groups shape stat glcm hog --model svm --svm-pca 100 --n-iter 8 --tune-n 3000 --final --save
+    # Colab, with models/cnn_none.pt restored from Drive:
+    python scripts/train_cnn.py --data cnn_none_128.npz --eval-only models/cnn_none.pt
+    python scripts/run_ablation.py --cnn reports/cnn_none_128.json --cnn-name J_cnn_none     # updates the CNN row with TEST metrics
+The dashboard shows the feature-based model as the main prediction and the CNN (`models/cnn_none.pt`) as a second opinion.
+`python scripts/make_code_zip.py` rebuilds only the Colab code bundle.

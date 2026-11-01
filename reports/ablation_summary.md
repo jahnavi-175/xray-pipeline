@@ -1,11 +1,22 @@
-         config enhancement segmentation  seg_dice            features classifier  n_features  val_acc  val_f1  val_auc  val_rec  val_spec  train_acc
-     A_noseg-rf        none         full       NaN       stat+glcm+hog         rf         346    0.866   0.831    0.936    0.786     0.923      1.000
-B_unet_shape-rf        none    none_unet     0.982               shape         rf          27    0.851   0.822    0.916    0.819     0.874      0.932
- C_unet_stat-rf        none    none_unet     0.982                stat         rf          10    0.843   0.813    0.914    0.813     0.864      0.948
- D_unet_glcm-rf        none    none_unet     0.982                glcm         rf          14    0.752   0.715    0.834    0.740     0.761      0.988
-  E_unet_hog-rf        none    none_unet     0.982                 hog         rf         324    0.874   0.847    0.940    0.833     0.903      1.000
- F_unet_hand-rf        none    none_unet     0.982     shape+stat+glcm         rf          51    0.884   0.861    0.947    0.861     0.900      1.000
-  G_unet_all-rf        none    none_unet     0.982 shape+stat+glcm+hog         rf         375    0.902   0.883    0.957    0.880     0.918      0.984
- H_clahe_all-rf       clahe    none_unet     0.982 shape+stat+glcm+hog         rf         375    0.899   0.879    0.955    0.875     0.916      0.985
-A2_unet_nosh-rf        none    none_unet     0.982       stat+glcm+hog         rf         348    0.893   0.872    0.951    0.869     0.911      0.999
-    I_gt_all-rf        none           gt     1.000 shape+stat+glcm+hog         rf         375    0.903   0.883    0.958    0.879     0.920      0.986
+              config enhancement      segmentation  seg_dice            features   classifier  n_features  val_acc  val_f1  val_auc  val_rec  val_spec  train_acc
+          A_noseg-rf        none              full       NaN       stat+glcm+hog           rf       346.0    0.866   0.831    0.936    0.786     0.923      1.000
+     B_unet_shape-rf        none         none_unet     0.982               shape           rf        27.0    0.851   0.822    0.916    0.819     0.874      0.932
+      C_unet_stat-rf        none         none_unet     0.982                stat           rf        10.0    0.843   0.813    0.914    0.813     0.864      0.948
+      D_unet_glcm-rf        none         none_unet     0.982                glcm           rf        14.0    0.752   0.715    0.834    0.740     0.761      0.988
+       E_unet_hog-rf        none         none_unet     0.982                 hog           rf       324.0    0.874   0.847    0.940    0.833     0.903      1.000
+      F_unet_hand-rf        none         none_unet     0.982     shape+stat+glcm           rf        51.0    0.884   0.861    0.947    0.861     0.900      1.000
+       G_unet_all-rf        none         none_unet     0.982 shape+stat+glcm+hog           rf       375.0    0.902   0.883    0.957    0.880     0.918      0.984
+      H_clahe_all-rf       clahe         none_unet     0.982 shape+stat+glcm+hog           rf       375.0    0.899   0.879    0.955    0.875     0.916      0.985
+     A2_unet_nosh-rf        none         none_unet     0.982       stat+glcm+hog           rf       348.0    0.893   0.872    0.951    0.869     0.911      0.999
+         I_gt_all-rf        none                gt     1.000 shape+stat+glcm+hog           rf       375.0    0.903   0.883    0.958    0.879     0.920      0.986
+        G_noViral-rf        none         none_unet     0.982 shape+stat+glcm+hog           rf       375.0    0.904   0.871    0.960    0.862     0.929      0.991
+             PROV-rf        none         none_unet     0.982 shape+stat+glcm+hog           rf       375.0    0.902   0.883    0.957    0.880     0.918      0.984
+         K_he_all-rf          he         none_unet     0.982 shape+stat+glcm+hog           rf       375.0    0.896   0.873    0.956    0.850     0.930      0.983
+   L_histspec_all-rf    histspec         none_unet     0.982 shape+stat+glcm+hog           rf       375.0    0.898   0.875    0.951    0.850     0.933      0.991
+M_homomorphic_all-rf homomorphic         none_unet     0.982 shape+stat+glcm+hog           rf       375.0    0.896   0.873    0.953    0.859     0.922      1.000
+   N_highpass_all-rf    highpass         none_unet     0.982 shape+stat+glcm+hog           rf       375.0    0.898   0.877    0.955    0.870     0.918      0.998
+     G_svm_probe-svm        none         none_unet     0.982 shape+stat+glcm+hog          svm       375.0    0.907   0.888    0.961    0.887     0.921      1.000
+    A2_unet_nosh-svm        none         none_unet     0.982       stat+glcm+hog          svm       348.0    0.902   0.883    0.957    0.882     0.917      1.000
+      G_unet_all-svm        none         none_unet     0.982 shape+stat+glcm+hog          svm       375.0    0.911   0.893    0.967    0.886     0.929      0.954
+           FINAL-svm        none         none_unet     0.982 shape+stat+glcm+hog          svm       375.0    0.907   0.890    0.967    0.899     0.912      0.954
+          J_cnn_none        none none (end-to-end)       NaN             learned cnn-resnet18         NaN    0.940   0.925    0.982    0.885     0.980        NaN

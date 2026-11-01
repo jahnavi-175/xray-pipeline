@@ -10,28 +10,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import numpy as np
 import torch
 import torch.nn as nn
-import torchvision
 from sklearn.metrics import roc_auc_score
 from torch.utils.data import DataLoader, Dataset
 from src.io_utils import ROOT
+from src.classifiers.cnn import Net
 from src.utils import set_seed
 from src.evaluation.metrics import metrics_row
 from src.segmentation.unet_data import augment
-
-
-class Net(nn.Module):
-    """ResNet18 on 1-channel [0,1] images (replicated to 3 channels + ImageNet normalisation inside)."""
-
-    def __init__(self, pretrained=True):
-        super().__init__()
-        w = torchvision.models.ResNet18_Weights.IMAGENET1K_V1 if pretrained else None
-        self.m = torchvision.models.resnet18(weights=w)
-        self.m.fc = nn.Linear(512, 2)
-        self.register_buffer("mean", torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1))
-        self.register_buffer("std", torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1))
-
-    def forward(self, x):
-        return self.m((x.repeat(1, 3, 1, 1) - self.mean) / self.std)
 
 
 class DS(Dataset):
@@ -75,6 +60,8 @@ ap.add_argument("--batch", type=int, default=64)
 ap.add_argument("--lr", type=float, default=3e-4)
 ap.add_argument("--no-pretrained", action="store_true")
 ap.add_argument("--final", action="store_true", help="also report TEST metrics (once, at the very end)")
+ap.add_argument("--eval-only", default=None, metavar="CKPT",
+                help="evaluate an already-trained checkpoint on VAL and TEST (no training); use once, at the very end")
 ap.add_argument("--smoke", action="store_true")
 args = ap.parse_args()
 
@@ -96,6 +83,23 @@ else:
 tr, va, te = (split == s for s in ("train", "val", "test"))
 print(f"train {tr.sum()} | val {va.sum()} | test {te.sum()} | {size}px | positives {y[tr].mean():.2f}")
 
+rep = ROOT / "reports"; rep.mkdir(exist_ok=True); (ROOT / "models").mkdir(exist_ok=True)
+js = rep / f"cnn_{enh}_{size}.json"
+if args.eval_only:
+    ck = torch.load(args.eval_only, map_location="cpu")
+    model = Net(pretrained=False).to(dev)
+    model.load_state_dict(ck["state"])
+    m = {"n_train": int(tr.sum()), **evaluate("val_", model, X[va], y[va], cls[va], dev),
+         **evaluate("test_", model, X[te], y[te], cls[te], dev)}
+    rec = json.loads(js.read_text()) if js.exists() else {"enh": enh, "size": size, "arch": "resnet18", "pretrained": True, "epochs": None, "metrics": {}}
+    rec["metrics"].update(m)
+    js.write_text(json.dumps(rec, indent=1))
+    print("VAL  acc {:.3f}  F1 {:.3f}  AUC {:.3f}".format(m["val_acc"], m["val_f1"], m["val_auc"]))
+    print("TEST acc {:.3f} [{:.3f}, {:.3f}]  F1 {:.3f}  AUC {:.3f}  recall {:.3f}  specificity {:.3f}".format(
+        m["test_acc"], m["test_acc_lo"], m["test_acc_hi"], m["test_f1"], m["test_auc"], m["test_rec"], m["test_spec"]))
+    print("updated", js)
+    sys.exit(0)
+
 model = Net(pretrained=not args.no_pretrained).to(dev)
 cnt = np.bincount(y[tr], minlength=2)
 weights = torch.tensor(len(y[tr]) / (2.0 * cnt), dtype=torch.float32, device=dev)     # class balancing
@@ -103,7 +107,7 @@ crit = nn.CrossEntropyLoss(weight=weights)
 opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
 sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
 loader = DataLoader(DS(X[tr], y[tr], train=True), batch_size=args.batch, shuffle=True, num_workers=0,
-                    drop_last=tr.sum() >= args.batch)
+                    drop_last=bool(tr.sum() >= args.batch))
 
 best, best_state, best_ep, t0 = -1.0, None, 0, time.time()
 for ep in range(1, args.epochs + 1):
@@ -123,8 +127,6 @@ if args.final:
     metrics.update(evaluate("test_", model, X[te], y[te], cls[te], dev))
 print(f"best epoch {best_ep}: val acc {metrics['val_acc']:.3f}  F1 {metrics['val_f1']:.3f}  AUC {metrics['val_auc']:.3f}")
 
-rep = ROOT / "reports"; rep.mkdir(exist_ok=True); (ROOT / "models").mkdir(exist_ok=True)
-js = rep / f"cnn_{enh}_{size}.json"
 js.write_text(json.dumps({"enh": enh, "size": size, "arch": "resnet18", "pretrained": not args.no_pretrained,
                           "epochs": args.epochs, "metrics": metrics}, indent=1))
 torch.save({"state": model.state_dict(), "enh": enh, "size": size, "arch": "resnet18"}, ROOT / "models" / f"cnn_{enh}.pt")
