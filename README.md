@@ -7,7 +7,7 @@ A Streamlit dashboard runs the whole chain interactively.
 
 > **Research prototype for a coursework project. Not a medical device and not clinically validated. Do not use for diagnosis.**
 
-**Author:** `Jahnavi Kashyap & Khushi Singh`  |  **Course / institution:** `<Image Processing and Analysis, KIIT>`  |  **Final report:** [`reports/final_report.pdf`](reports/final_report.pdf) *(add)*
+**Author:** `Jahnavi Kashyap & Khushi Singh`  |  **Course / institution:** `<Image Processing and Analysis, KIIT>`  |  **Final report:** [`reports/final_report.pdf`](reports/final_report.pdf) **
 
 ---
 
